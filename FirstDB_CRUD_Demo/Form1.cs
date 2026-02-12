@@ -1,69 +1,66 @@
-﻿using FirstDB_CRUDDEmo;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace FirstDB_CRUD_Demo
 {
     public partial class Form1 : Form
     {
-        DBWorker storage;
+        private DBWorker dbWorker;
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ConnectButton_Click(object sender, EventArgs e)
         {
-            DBWorker storage = new DBWorker(tb_dbFilename.Text);
-            storage.InitQuery();
-            this.storage = storage;
+            dbWorker = new DBWorker(dbFilenameTextBox.Text);
+            LoadStudents();
         }
 
-        private void f_TextChanged(object sender, EventArgs e)
+        private void LoadStudents()
         {
-
+            studentsDataGridView.DataSource = dbWorker.GetAllStudents();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)
         {
-
+            var person = new Person(0, surnameTextBox.Text, nameTextBox.Text, birthDateTimePicker.Value, contactDataTextBox.Text);
+            dbWorker.AddStudent(person);
+            LoadStudents();
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void UpdateButton_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void button1_Click_2(object sender, EventArgs e)
-        {
-            int age;
-            if (int.TryParse(tb_age.Text, out age))
+            if (studentsDataGridView.SelectedRows.Count > 0)
             {
-                Person person = new Person(tb_name.Text, age);
-                storage.AddData(person);
-            }
-            else
-            {
-                MessageBox.Show($"Возраст {tb_age} некорректен");
+                int selectedId = Convert.ToInt32(studentsDataGridView.SelectedRows[0].Cells["Id"].Value);
+                var person = new Person(selectedId, surnameTextBox.Text, nameTextBox.Text, birthDateTimePicker.Value, contactDataTextBox.Text);
+                dbWorker.UpdateStudent(person);
+                LoadStudents();
             }
         }
 
-        private void tb_name_TextChanged(object sender, EventArgs e)
+        private void DeleteButton_Click(object sender, EventArgs e)
         {
-
+            if (studentsDataGridView.SelectedRows.Count > 0)
+            {
+                int selectedId = Convert.ToInt32(studentsDataGridView.SelectedRows[0].Cells["Id"].Value);
+                dbWorker.DeleteStudent(selectedId);
+                LoadStudents();
+            }
         }
 
-        private void tb_age_TextChanged(object sender, EventArgs e)
+        private void StudentsDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-
+            if (studentsDataGridView.SelectedRows.Count > 0)
+            {
+                var selectedRow = studentsDataGridView.SelectedRows[0];
+                surnameTextBox.Text = selectedRow.Cells["Surname"].Value.ToString();
+                nameTextBox.Text = selectedRow.Cells["Name"].Value.ToString();
+                birthDateTimePicker.Value = Convert.ToDateTime(selectedRow.Cells["BirthDate"].Value);
+                contactDataTextBox.Text = selectedRow.Cells["ContactData"].Value.ToString();
+            }
         }
     }
 }
