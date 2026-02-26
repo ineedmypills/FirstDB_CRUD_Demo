@@ -201,5 +201,11 @@
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.DataGridView studentsDataGridView;
+        private System.Windows.Forms.TableLayoutPanel mainTableLayoutPanel;
+        private System.Windows.Forms.GroupBox dbConnectionGroupBox;
+        private System.Windows.Forms.TableLayoutPanel dbConnectionTableLayoutPanel;
+        private System.Windows.Forms.GroupBox studentDataGroupBox;
+        private System.Windows.Forms.TableLayoutPanel studentDataTableLayoutPanel;
+        private System.Windows.Forms.FlowLayoutPanel actionsFlowLayoutPanel;
     }
 }
